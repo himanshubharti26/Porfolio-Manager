@@ -31,12 +31,15 @@ const getSecurityById = asyncHandler(async (req, res) => {
 
 const createSecurity = asyncHandler(async (req, res) => {
     const { securityName, value } = req.body;
-    if (!securityName || !value) {
-        throw new ApiError("Security name and value are required", 400);
+    if (!securityName || typeof securityName !== "string" || !securityName.trim()) {
+        throw new ApiError("Security name is required and must be a non-empty string", 400);
+    }
+    if (value === undefined || value === null || isNaN(Number(value))) {
+        throw new ApiError("Value is required and must be a number", 400);
     }
     const newSecurity = new securityDetail({
-        securityName,
-        value
+        securityName: securityName.trim(),
+        value: Number(value)
     });
     try {
         await newSecurity.save();
@@ -56,12 +59,15 @@ const updateSecurity = asyncHandler(async (req, res) => {
     if (!securityId) {
         throw new ApiError("Security ID is required", 400);
     }
-    if (!securityName || !value) {
-        throw new ApiError("Security name and value are required", 400);
+    if (!securityName || typeof securityName !== "string" || !securityName.trim()) {
+        throw new ApiError("Security name is required and must be a non-empty string", 400);
+    }
+    if (value === undefined || value === null || isNaN(Number(value))) {
+        throw new ApiError("Value is required and must be a number", 400);
     }
     const updatedSecurity = await securityDetail.findByIdAndUpdate(
         securityId, 
-        { securityName, value },
+        { securityName: securityName.trim(), value: Number(value) },
         { new: true }
     );
     if (!updatedSecurity) { 
