@@ -3,9 +3,11 @@ import mongoose, { Schema } from "mongoose";
 const auditActionSchema = new Schema(
   {
     userLoginDetailId: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "UserLoginDetail",
+      required: true,
     },
-    sessionId: {
+    sessionID: {
       type: String,
     },
     loginStatus: {

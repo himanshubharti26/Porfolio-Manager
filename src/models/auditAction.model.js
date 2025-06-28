@@ -1,21 +1,26 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Types } from "mongoose";
 
 const auditActionSchema = new Schema(
   {
     userLoginDetailId: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "UserLoginDetail",
+      required: true,
     },
     userAction: {
       type: String,
+      required: true,
     },
     startDateTime: {
-      type: String,
+      type: Date,
+      required: true,
     },
     endDateTime: {
-      type: String,
+      type: Date,
+      required: true,
     },
   },
   { timestamps: true }
 );
 
-export const auditAction = mongoose.model("AuditAction", auditActionSchema);
+export const AuditAction = mongoose.model("AuditAction", auditActionSchema);

@@ -3,7 +3,9 @@ import mongoose, { Schema } from "mongoose";
 const accountDetailSchema = new Schema(
   {
     userLoginDetailId: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "UserLoginDetail",
+      require: true,
     },
     credit: {
       type: String,
