@@ -3,13 +3,25 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 const userSchema = new Schema({
-    userName:{
+    id:{
         type: String,
         required: true,
         Unique: true,
         trim: true,
         index: true,
         lowercase:true
+    },
+    firstName:{
+        type: String,
+        required: true,
+        trim: true,
+       
+    },
+     lastName:{
+        type: String,
+        required: true,
+        trim: true,
+       
     },
     email:{
         type: String,
@@ -18,19 +30,34 @@ const userSchema = new Schema({
         trim: true,
         required:true
     },
-    fullName:{
-        type: String,
-        trim: true,
-        required:true
-    },
+    
     password:{
         type: String,
         required: [true, 'Password is required']
     },
-    refreshToken:{
-        type:String, 
+
+    createdBy:{
+        type: String,
+        default: "admin"
+    },
+   
+    modifiedBy:{
+        type: String,
+        default: "admin"
+    },  
+},
+{timestamps: {
+        createdOn:{
+            type: Date,
+            default: Date.now()
+        },
+        modifiedOn: {
+            type: Date,
+            default: Date.now()
+        }
     }
-},{timestamps:true});
+}
+);
 
 userSchema.pre("save", async function(next){
     if(!this.isModified("password")) return next();
@@ -56,15 +83,4 @@ userSchema.methods.generateAccessToken = function(){
     }
 )
 }
-
-userSchema.methods.generateRefreshToken = function(){
-    return jwt.sign({
-        _id: this._id,
-    },
-    process.env.REFRESH_TOKEN_SECRET,
-    {
-        expiresIn:process.env.REFRESH_TOKEN_EXPIRY
-    }
-)   
-}
-export const user = mongoose.model("User", userSchema);
+export const userDetail = mongoose.model("UserDetail", userSchema);

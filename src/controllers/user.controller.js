@@ -1,6 +1,6 @@
 import { asyncHandler } from "../utils/AsyncHandler.js"
 import { ApiError} from "../utils/ApiError.js";
-import { user } from "../models/user.model.js";
+import { userDetail } from "../models/userDetail.model.js";
 import { deleteImage, uploadOnCloudinary} from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
@@ -9,7 +9,7 @@ const ObjectId = mongoose.Types.ObjectId;
 
 const  generateAccessAndRefreshToken = async (userId)=>{
     try{
-        const fetchedUser = await user.findById(userId);
+        const fetchedUser = await userDetail.findById(userId);
         const accessToken =  fetchedUser.generateAccessToken();
         const refreshToken = fetchedUser.generateRefreshToken();
         fetchedUser.refreshToken = refreshToken;
@@ -38,7 +38,7 @@ const registerUser = asyncHandler(async(req, res)=>{
             throw new ApiError("All fields are required", 400);
     }
 
-    const existedUser = await user.findOne({
+    const existedUser = await userDetail.findOne({
         $or:[{userName}, {email}]
     })
 
@@ -67,7 +67,7 @@ const registerUser = asyncHandler(async(req, res)=>{
         throw new ApiError("Avatar is required");
     }
 
-    const newUser = await user.create({
+    const newUser = await userDetail.create({
         fullName,
         userName: userName.toLowerCase(),
         email,
@@ -77,7 +77,7 @@ const registerUser = asyncHandler(async(req, res)=>{
 
     })
     
-    const createdUser = await user.findById(newUser._id).select(
+    const createdUser = await userDetail.findById(newUser._id).select(
         "-password -refreshToken"
     )
 
@@ -103,7 +103,7 @@ const loginUser = asyncHandler(async (req, res)=>{
         throw new ApiError("Email or username is required", 400)
     }
 
-    const userVal = await user.findOne({$or:[{email}, {userName}]});
+    const userVal = await userDetail.findOne({$or:[{email}, {userName}]});
     if(!userVal){
         throw new ApiError("User not found", 404);
     }
@@ -140,7 +140,7 @@ const loginUser = asyncHandler(async (req, res)=>{
 })
 
 const logoutUser = asyncHandler(async(req, res)=>{
-    const fetchedUser = await user.findByIdAndUpdate(
+    const fetchedUser = await userDetail.findByIdAndUpdate(
         req.user._id, 
         {$set:{refreshToken:"", }},
         {new:true}
@@ -172,7 +172,7 @@ const refreshAccessToken = asyncHandler(async(req, res)=>{
         
         const  decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
         
-       const User =  await user.findById(decodedToken?._id);
+       const User =  await userDetail.findById(decodedToken?._id);
        if(!User){
         throw new ApiError(401, "Invalid refresh token");
        }
@@ -202,7 +202,7 @@ const refreshAccessToken = asyncHandler(async(req, res)=>{
 
 const changeCurrentPassword = asyncHandler(async(req, res)=>{
     const {oldPassword, newPassword} = req.body;
-    const User = await user.findById(req.user.id);
+    const User = await userDetail.findById(req.user.id);
     const correct = User.isPasswordCorrect(oldPassword);
     if(!correct){
         throw new ApiError("Invalid old password", 402);
@@ -233,7 +233,7 @@ const updateUserDetails = asyncHandler(async(req, res)=>{
     // return res.status(200)
     //     .json(200,newUser,"User details updated successfully");
 
-    const newUser = await user.findByIdAndUpdate(
+    const newUser = await userDetail.findByIdAndUpdate(
         req.user._id,
         {
             $set:{
@@ -262,7 +262,7 @@ const updateUserAvtar = asyncHandler(async(req, res)=>{
     }
     const oldImageTobeDeleted = req.user?.avatar;
 
-     const User = await user.findByIdAndUpdate(
+     const User = await userDetail.findByIdAndUpdate(
         req.user._id,
         {
             $set:{
@@ -294,7 +294,7 @@ const updateUserCoverImage = asyncHandler(async(req, res)=>{
     }
    const oldImageTobeDeleted = req.user?.coverImage;
 
-    const User = await user.findByIdAndUpdate(
+    const User = await userDetail.findByIdAndUpdate(
         req.user?._id,
         {
             $set:{
@@ -324,7 +324,7 @@ const getUserChannelProfile = asyncHandler(async(req, res)=>{
         throw new ApiError("User name is required", 400);
     }
 
-    const channel = await user.aggregate([
+    const channel = await userDetail.aggregate([
         {
             $match:{
                 userName:userName.toLowerCase()
@@ -392,7 +392,7 @@ const getUserChannelProfile = asyncHandler(async(req, res)=>{
 
 
 const getWatchHistory = asyncHandler(async(req, res)=>{
-    const User = user.aggregate([
+    const User = userDetail.aggregate([
         {
             $match:{
                 _id: mongoose.Types.ObjectId(req.user._id)
