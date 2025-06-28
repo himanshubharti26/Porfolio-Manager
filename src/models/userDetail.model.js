@@ -1,6 +1,7 @@
 import mongoose, {Schema} from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+// import { refreshAccessToken } from "../controllers/user.controller";
 
 const userSchema = new Schema({
 
@@ -38,6 +39,10 @@ const userSchema = new Schema({
         type: String,
         default: "admin"
     },  
+    refreshAccessToken: {
+        type: String,
+        default: null
+    },  
 },
 {timestamps: {
         createdOn:{
@@ -64,16 +69,33 @@ userSchema.methods.isPasswordCorrect = async function (password){
 
 
 userSchema.methods.generateAccessToken = function(){
-    return jwt.sign({
+    console.log("Generating access token for user:", this._id);
+    try{
+        const token =  jwt.sign({
         _id: this._id,
         email: this.email,
-        fullName: this.fullName,
-        userName:this.userName
+        firstName: this.firstName,
+        lastName:this.lastName
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
         expiresIn:process.env.ACCESS_TOKEN_EXPIRY
+    })
+        return token;
+    }catch(error){
+        console.error("Error generating access token:", error);
+        throw new Error("Error generating access token");
+    }   
+}
+userSchema.methods.generateRefreshToken = function(){
+    console.log("Generating refresh token for user:", this._id);
+    return jwt.sign({
+        _id: this._id,
+    },
+    process.env.REFRESH_TOKEN_SECRET,
+    {
+        expiresIn:process.env.REFRESH_TOKEN_EXPIRY
     }
-)
+)   
 }
 export const userDetail = mongoose.model("UserDetail", userSchema);
