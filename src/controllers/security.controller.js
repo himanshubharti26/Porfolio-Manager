@@ -54,8 +54,7 @@ const createSecurity = asyncHandler(async (req, res) => {
 });
 
 const updateSecurity = asyncHandler(async (req, res) => {
-    const { securityId } = req.params;
-    const { securityName, value } = req.body;
+    const { securityId, securityName, value } = req.body;
     if (!securityId) {
         throw new ApiError("Security ID is required", 400);
     }

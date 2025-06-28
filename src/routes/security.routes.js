@@ -8,7 +8,7 @@ router.route("/").get(verifyJWT, getSecurities);
 router.route("/:securityId").get(verifyJWT, getSecurityById);
 
 router.route("/create").post(verifyJWT,  createSecurity);
-router.route("/update/:securityId").patch(verifyJWT, updateSecurity);
+router.route("/update").post(verifyJWT, updateSecurity);
 
 export default router;
 
