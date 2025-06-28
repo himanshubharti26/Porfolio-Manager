@@ -1,4 +1,7 @@
 import { securityDetail } from "../models/securityDetail.model.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/AsyncHandler.js";
 
 const getSecurities = asyncHandler(async (req, res) => {
     const { search } = req.query;
@@ -35,10 +38,16 @@ const createSecurity = asyncHandler(async (req, res) => {
         securityName,
         value
     });
-    await newSecurity.save();
-    return res.status(201).json(    
-        new ApiResponse(201, newSecurity, "Security created successfully")
-    );
+    try {
+        await newSecurity.save();
+        return res.status(201).json(
+            new ApiResponse(201, newSecurity, "Security created successfully")
+        );
+    } catch (error) {
+        console.log("Error in creating security", error);
+        throw new ApiError("Error in creating security", 500);
+    }
+
 });
 
 export {
