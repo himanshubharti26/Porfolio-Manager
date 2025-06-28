@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { LoginStatusType } from "../constants";
+import { LoginStatusType } from "../constants.js";
 
 const auditUserLoginSchema = new Schema(
   {

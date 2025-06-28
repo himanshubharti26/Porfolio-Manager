@@ -5,8 +5,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
 
-
-export const createPurchaseOrder = asyncHandler(async (req, res) => {
+const createPurchaseOrder = asyncHandler(async (req, res) => {
   const { stockId, quantity } = req.body;
 
   if (!stockId || !quantity) {
@@ -51,7 +50,7 @@ export const createPurchaseOrder = asyncHandler(async (req, res) => {
     );
 });
 
-export const createSellOrder = asyncHandler(async (req, res) => {
+const createSellOrder = asyncHandler(async (req, res) => {
   const { stockId, quantity } = req.body;
 
   if (!stockId || !quantity) {

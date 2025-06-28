@@ -1,31 +1,34 @@
 import { Router } from "express";
-import { changeCurrentPassword,
-    getCurrentUser,
-    loginUser, 
-    logoutUser, 
-    registerUser, 
-    updateUserDetails
+import {
+  changeCurrentPassword,
+  getCurrentUser,
+  loginUser,
+  logoutUser,
+  registerUser,
+  updateUserDetails,
 } from "../controllers/user.controller.js";
+import {
+  createPurchaseOrder,
+  createSellOrder,
+} from "../controllers/order.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-
-
 
 const router = Router();
 
 router.route("/register").post(
-    upload.fields([
-        {
-            name:"avatar",
-            maxCount:1
-        },
-        {
-            name:"coverImage",
-            maxCount:1
-        }
-    ]),
-    registerUser
-)
+  upload.fields([
+    {
+      name: "avatar",
+      maxCount: 1,
+    },
+    {
+      name: "coverImage",
+      maxCount: 1,
+    },
+  ]),
+  registerUser
+);
 
 router.route("/login").post(loginUser);
 
@@ -34,5 +37,8 @@ router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/change-password").post(verifyJWT, changeCurrentPassword);
 router.route("/current-user").get(verifyJWT, getCurrentUser);
 router.route("/update-account").post(verifyJWT, updateUserDetails);
+
+router.route("/purchase-order").post(verifyJWT, createPurchaseOrder);
+router.route("/sell-order").post(verifyJWT, createSellOrder);
 
 export default router;

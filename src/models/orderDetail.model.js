@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
-import { OrderStatusType, TransactionType } from "../constants";
+import { OrderStatusType, TransactionType } from "../constants.js";
 
 // ID INT PK
 // ID_SECURITY_DETAIL INT FK - SECURITY_DETAIL.ID
