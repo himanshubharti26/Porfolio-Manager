@@ -4,11 +4,15 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/AsyncHandler.js";
 
 const getSecurities = asyncHandler(async (req, res) => {
-    const { search } = req.query;
+    const { search, value } = req.query;
     let query = {};
     if (search && search.trim() !== "") {
         query.securityName = { $regex: search, $options: "i" };
     }
+    if (value !== undefined && value !== "") {
+        query.value = Number(value);
+    }
+    console.log("query=>", query);
     const stocks = await securityDetail.find(query, { value: 1, securityName: 1 }).limit(20);
     return res.status(200).json(
         new ApiResponse(200, stocks, "Stocks fetched successfully")
