@@ -12,20 +12,9 @@ import mongoose, {Schema} from "mongoose";
 // MODIFIED_BY
 
 const userLoginDetailSchema = new Schema({
-    id:{
-        type: Number,
-        required: true,
-        Unique: true,
-        
-    },
     userDetailId:{
-        type: Number,
-        required: true,
+        type: Schema.Types.ObjectId,
         ref: "UserDetail",
-        index: true,
-        unique: true,
-        trim: true,
-        lowercase:true
     },
     firstName:{
         type: String,

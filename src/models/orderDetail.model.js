@@ -11,19 +11,9 @@ import { Schema } from "mongoose";
 // CREATED_BY INT FK - USER_LOGIN_DETAIL.ID
 
 const orderDetailSchema = new Schema({
-    id: {
-        type: Number,
-        required: true,
-        unique: true,
-    },
     securityDetailId: {
-        type: Number,
-        required: true,
-        ref: "SecurityDetail",
-        index: true,
-        unique: true,
-        trim: true,
-        lowercase: true
+       type: Schema.Types.ObjectId,
+       ref: "SecurityDetail",
     },
     orderRefNo: {
         type: String,
