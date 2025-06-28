@@ -50,8 +50,30 @@ const createSecurity = asyncHandler(async (req, res) => {
 
 });
 
+const updateSecurity = asyncHandler(async (req, res) => {
+    const { securityId } = req.params;
+    const { securityName, value } = req.body;
+    if (!securityId) {
+        throw new ApiError("Security ID is required", 400);
+    }
+    if (!securityName || !value) {
+        throw new ApiError("Security name and value are required", 400);
+    }
+    const updatedSecurity = await securityDetail.findByIdAndUpdate(
+        securityId, 
+        { securityName, value },
+        { new: true }
+    );
+    if (!updatedSecurity) { 
+        throw new ApiError("Security not found", 404);
+    }
+    return res.status(200).json(
+        new ApiResponse(200, updatedSecurity, "Security updated successfully")
+    );
+});
 export {
     getSecurities,
     getSecurityById,
-    createSecurity
+    createSecurity,
+    updateSecurity
 }
