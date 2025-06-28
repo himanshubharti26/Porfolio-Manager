@@ -1,4 +1,5 @@
 import { OrderStatusType, TransactionType } from "../constants.js";
+import { AccountDetail } from "../models/accountDetail.model.js";
 import { orderDetail } from "../models/orderDetail.model.js";
 import { securityDetail } from "../models/securityDetail.model.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -33,6 +34,15 @@ const createPurchaseOrder = asyncHandler(async (req, res) => {
   }
 
   const orderValue = stock.price * quantity;
+
+  const userAccount = await AccountDetail.findOne({
+    userLoginDetailDetailId: req.userLoginDetailDetailId,
+  })
+    .lean()
+    .select("runningBalance");
+
+  if (userAccount.runningBalance < orderValue)
+    new ApiError(400, "Not enough balance in wallet");
 
   const newOrder = await orderDetail.create({
     securityDetailId: stock._id,

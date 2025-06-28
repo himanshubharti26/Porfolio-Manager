@@ -15,6 +15,7 @@ const accountDetailSchema = new Schema(
     },
     runningBalance: {
       type: Number,
+      require: true
     },
     orderDetailId: {
       type: Schema.Types.ObjectId,
@@ -24,4 +25,4 @@ const accountDetailSchema = new Schema(
   { timestamps: true }
 );
 
-export const auditAction = mongoose.model("AccountDetail", accountDetailSchema);
+export const AccountDetail = mongoose.model("AccountDetail", accountDetailSchema);
