@@ -8,16 +8,17 @@ const accountDetailSchema = new Schema(
       require: true,
     },
     credit: {
-      type: String,
+      type: Number,
     },
     debit: {
-      type: String,
+      type: Number,
     },
     runningBalance: {
-      type: String,
+      type: Number,
     },
     orderDetailId: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "OrderDetail"
     },
   },
   { timestamps: true }

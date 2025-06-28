@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { Schema } from "mongoose";
+import { OrderStatusType, TransactionType } from "../constants";
 
 // ID INT PK
 // ID_SECURITY_DETAIL INT FK - SECURITY_DETAIL.ID
@@ -10,34 +11,38 @@ import { Schema } from "mongoose";
 // CREATED_ON TIMESTAMP
 // CREATED_BY INT FK - USER_LOGIN_DETAIL.ID
 
-const orderDetailSchema = new Schema({
+const orderDetailSchema = new Schema(
+  {
     securityDetailId: {
-       type: Schema.Types.ObjectId,
-       ref: "SecurityDetail",
+      type: Schema.Types.ObjectId,
+      ref: "SecurityDetail",
     },
     orderRefNo: {
-        type: String,
-        required: true,
-        trim: true
+      type: String,
+      required: true,
+      trim: true,
     },
     orderStatus: {
-        type: String,
-        enum: ["PENDING", "COMPLETED", "CANCELLED"],
-        default: "PENDING"
+      type: String,
+      enum: Object.values(OrderStatusType),
+      default: OrderStatusType.PENDING,
     },
     transactionType: {
-        type: String,
-        enum: ["BUY", "SELL"],
-        required: true
+      type: String,
+      enum: Object.values(TransactionType),
+      required: true,
     },
     orderValue: {
-        type: Number,
-        required: true
+      type: Number,
+      required: true,
     },
+    createdOn: { type: Date, default: Date.now() },
     createdBy: {
-        type: String,
-        default: "admin"
-    }
-}, { timestamps: { createdOn: { type: Date, default: Date.now() } } });
+      type: Schema.Types.ObjectId,
+      ref: "UserLoginDetail",
+    },
+  },
+  { timestamps: true }
+);
 
 export const orderDetail = mongoose.model("OrderDetail", orderDetailSchema);
