@@ -3,14 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 const userSchema = new Schema({
-    id:{
-        type: String,
-        required: true,
-        Unique: true,
-        trim: true,
-        index: true,
-        lowercase:true
-    },
+
     firstName:{
         type: String,
         required: true,
